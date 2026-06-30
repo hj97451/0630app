@@ -2,7 +2,7 @@
 
 ## 1단계 — 학생 명단 입력
 
-`src/config/app-config.js` 파일을 열고 `students` 배열을 수정하세요.
+연결된 DATABASE에서 학생의 명단을 입력하세요.
 
 ```javascript
 students: [
