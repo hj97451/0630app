@@ -27,8 +27,8 @@ students: [
 
 ```javascript
 class: {
-  name: "3학년 2반",
-  year: "2025",
+  name: "5학년 1반",
+  year: "2026",
   totalStudents: 30,
 },
 ```
