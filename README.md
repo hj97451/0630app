@@ -34,9 +34,9 @@ homework-app/
 
 ## 🚀 빠른 시작
 
-1. `src/config/app-config.js`에서 학생 명단·과제·관리자 비밀번호 설정
-2. GitHub에 push → Vercel/Netlify로 배포
-3. `admin.html`은 교사만 접속
+1. `src/config/app-config.js`에서 페이지설정
+2. GitHub에 push → Vercel로 배포
+3. `admin.html`으로 관리자 화면에 접속
 
 ---
 
@@ -49,47 +49,7 @@ homework-app/
 | 관리자 비밀번호 | Firebase `/admin/password` | ❌ 없음 |
 | 제출 데이터 | Firebase `/submissions/` | ❌ 없음 |
 
-**초기 설정 방법:** `setup.html`을 브라우저로 열어 학생 명단과 관리자 비밀번호를 Firebase에 저장 → 완료 후 `setup.html` 삭제 (또는 `.gitignore`로 제외됨)
+**초기 설정 방법:** `setup.html`을 브라우저로 열어 학생 명단과 관리자 비밀번호를 Firebase에 저장 → 완료 후 `setup.html` 삭제
 
 
 
-- 순수 HTML/CSS/JavaScript (외부 라이브러리 없음)
-- **Firebase Realtime Database** — 실시간 데이터 저장 (여러 기기 지원)
-- 세션 관리: localStorage (로그인 상태 유지)
-
----
-
-## 📋 산출물 조건 체크리스트
-
-- [x] 소속학교·이름 표기 (`app-config.js` → `class.school`, `class.teacherName`)
-- [x] 개인정보처리방침 (로그인 화면 하단 링크)
-- [x] 이용약관 (로그인 화면 하단 링크)
-- [x] GitHub 레포지토리 주소: https://github.com/hj97451/0630app
-- [x] Firebase 백엔드 (`storage.js` — Realtime Database)
-- [ ] 프론트엔드 웹주소 (Vercel 배포 후 `app-config.js` → `site.frontendUrl` 입력)
-- [x] 사용방법 안내 (로그인 화면 하단 박스)
-- [ ] 배포 완료 확인 (Vercel 배포 후 체크)
-
----
-
-## 🔒 Firebase Realtime Database 보안 규칙
-
-Firebase 콘솔 → Realtime Database → 규칙에 아래를 적용하세요:
-
-```json
-{
-  "rules": {
-    "students": {
-      ".read":  true,
-      ".write": true
-    },
-    "submissions": {
-      ".read":  true,
-      ".write": true
-    }
-  }
-}
-```
-
-> ⚠️ 학교 내부용 앱이므로 단순 공개 규칙을 사용합니다.
-> 보안을 강화하려면 Firebase Authentication 연동이 필요합니다.
