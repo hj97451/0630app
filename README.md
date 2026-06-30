@@ -1,6 +1,6 @@
 # 📚 과제 제출 관리 앱
 
-초등학생을 위한 과제 제출 및 교사 관리 시스템입니다.
+**소속학교:** ○○중학교 | **제작자:** 홍길동
 
 ---
 
@@ -8,52 +8,87 @@
 
 ```
 homework-app/
-├── README.md                   ← 이 파일 (전체 구조 안내)
-├── index.html                  ← 앱 진입점 (학생 로그인/과제 제출)
-├── admin.html                  ← 교사 관리자 페이지
+├── index.html               ← 학생 과제 제출 페이지
+├── admin.html               ← 교사 관리자 페이지
 │
-├── src/
-│   ├── config/
-│   │   └── app-config.js       ← ⚙️ 앱 전체 설정 (과제 목록, 학급 정보 등)
-│   │
-│   ├── styles/
-│   │   ├── base.css            ← 공통 기본 스타일 (변수, 리셋)
-│   │   ├── student.css         ← 학생 페이지 전용 스타일
-│   │   └── admin.css           ← 관리자 페이지 전용 스타일
-│   │
-│   ├── utils/
-│   │   └── storage.js          ← 데이터 저장/불러오기 유틸리티 (localStorage)
-│   │
-│   ├── components/
-│   │   ├── login.js            ← 로그인 컴포넌트 (학번+이름+코드 검증)
-│   │   ├── submit.js           ← 과제 제출 컴포넌트 (PDF/이미지/텍스트)
-│   │   └── settings.js         ← 학생 설정 컴포넌트 (비밀번호 변경)
-│   │
-│   └── pages/
-│       ├── student-page.js     ← 학생 메인 페이지 로직
-│       └── admin-page.js       ← 관리자 페이지 로직
-│
-└── docs/
-    ├── SETUP.md                ← 🚀 처음 설정 방법 (교사용 가이드)
-    └── CUSTOMIZATION.md        ← 🎨 디자인/설정 커스터마이징 가이드
+└── src/
+    ├── config/
+    │   └── app-config.js    ← ⚙️ 학급·과제·관리자 설정
+    ├── styles/
+    │   ├── base.css         ← 공통 스타일
+    │   ├── student.css      ← 학생 페이지 스타일
+    │   └── admin.css        ← 관리자 페이지 스타일
+    ├── utils/
+    │   └── storage.js       ← Firebase Realtime Database 연동
+    ├── components/
+    │   ├── login.js         ← 로그인 컴포넌트
+    │   ├── submit.js        ← 과제 제출 컴포넌트
+    │   └── settings.js      ← 코드 변경 설정
+    └── pages/
+        ├── student-page.js  ← 학생 메인 페이지
+        └── admin-page.js    ← 관리자 대시보드
 ```
 
 ---
 
 ## 🚀 빠른 시작
 
-1. `docs/SETUP.md` 를 읽고 초기 설정을 완료하세요.
-2. `src/config/app-config.js` 에서 학생 명단과 과제를 입력하세요.
-3. `index.html` 을 브라우저로 열거나 웹 서버에 올리세요.
-4. 관리자 페이지는 `admin.html` 입니다.
+1. `src/config/app-config.js`에서 학생 명단·과제·관리자 비밀번호 설정
+2. GitHub에 push → Vercel/Netlify로 배포
+3. `admin.html`은 교사만 접속
 
 ---
 
-## 🔑 기술 스택
+## 🔐 개인정보 보안 구조
 
-- **순수 HTML/CSS/JavaScript** (외부 라이브러리 없음)
-- **localStorage** 로 데이터 저장 (서버 불필요)
-- 모든 파일은 독립적으로 수정 가능
+| 데이터 | 저장 위치 | GitHub 노출 |
+|--------|-----------|-------------|
+| 학급명, 과제 목록 | `app-config.js` (코드) | ✅ 안전 |
+| 학생 명단 (이름, 코드) | Firebase `/students/` | ❌ 없음 |
+| 관리자 비밀번호 | Firebase `/admin/password` | ❌ 없음 |
+| 제출 데이터 | Firebase `/submissions/` | ❌ 없음 |
 
-> ⚠️ localStorage는 같은 브라우저/기기에서만 데이터가 공유됩니다.
-> 여러 기기에서 사용하려면 `docs/SETUP.md`의 "서버 배포" 항목을 참고하세요.
+**초기 설정 방법:** `setup.html`을 브라우저로 열어 학생 명단과 관리자 비밀번호를 Firebase에 저장 → 완료 후 `setup.html` 삭제 (또는 `.gitignore`로 제외됨)
+
+
+
+- 순수 HTML/CSS/JavaScript (외부 라이브러리 없음)
+- **Firebase Realtime Database** — 실시간 데이터 저장 (여러 기기 지원)
+- 세션 관리: localStorage (로그인 상태 유지)
+
+---
+
+## 📋 산출물 조건 체크리스트
+
+- [x] 소속학교·이름 표기 (`app-config.js` → `class.school`, `class.teacherName`)
+- [x] 개인정보처리방침 (로그인 화면 하단 링크)
+- [x] 이용약관 (로그인 화면 하단 링크)
+- [x] GitHub 레포지토리 주소: https://github.com/hj97451/0630app
+- [x] Firebase 백엔드 (`storage.js` — Realtime Database)
+- [ ] 프론트엔드 웹주소 (Vercel 배포 후 `app-config.js` → `site.frontendUrl` 입력)
+- [x] 사용방법 안내 (로그인 화면 하단 박스)
+- [ ] 배포 완료 확인 (Vercel 배포 후 체크)
+
+---
+
+## 🔒 Firebase Realtime Database 보안 규칙
+
+Firebase 콘솔 → Realtime Database → 규칙에 아래를 적용하세요:
+
+```json
+{
+  "rules": {
+    "students": {
+      ".read":  true,
+      ".write": true
+    },
+    "submissions": {
+      ".read":  true,
+      ".write": true
+    }
+  }
+}
+```
+
+> ⚠️ 학교 내부용 앱이므로 단순 공개 규칙을 사용합니다.
+> 보안을 강화하려면 Firebase Authentication 연동이 필요합니다.

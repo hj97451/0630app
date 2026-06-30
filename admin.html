@@ -6,7 +6,7 @@
   <title>관리자 페이지 – 과제 현황</title>
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- 구글 폰트 (Noto Sans KR) -->
+  <!-- 구글 폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -16,23 +16,17 @@
   <link rel="stylesheet" href="src/styles/admin.css" />
 </head>
 <body>
-
-  <!-- 관리자 앱 마운트 포인트 -->
   <div id="admin-app"></div>
 
-  <!-- 스크립트 로드 순서 중요! -->
   <!-- 1. 설정 -->
   <script src="src/config/app-config.js"></script>
-  <!-- 2. 유틸리티 -->
+  <!-- 2. 저장소 (Firebase) -->
   <script src="src/utils/storage.js"></script>
   <!-- 3. 페이지 -->
   <script src="src/pages/admin-page.js"></script>
 
-  <!-- 관리자 페이지 시작 -->
   <script>
-    Storage.initStudents(APP_CONFIG.students);
     AdminPage.init();
   </script>
-
 </body>
 </html>

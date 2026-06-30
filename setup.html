@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚠️ 초기 설정 (교사 전용 1회용)</title>
+  <style>
+    :root {
+      --primary: #4A90D9;
+      --danger:  #E05252;
+      --success: #34C472;
+      --bg:      #F5F7FA;
+      --surface: #FFFFFF;
+      --border:  #DDE3EC;
+      --text:    #1E2840;
+      --sub:     #6B7A99;
+      --muted:   #A0AABB;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Noto Sans KR", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    .warn-banner {
+      background: #FFF3CD;
+      border: 2px solid #F5A623;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: 0.875rem;
+      color: #7A5000;
+    }
+    .warn-banner strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+
+    h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .sub { color: var(--sub); font-size: 0.875rem; margin-bottom: 2rem; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+
+    label   { display: block; font-size: 0.8rem; font-weight: 600; color: var(--sub); margin-bottom: 4px; margin-top: 12px; }
+    input, textarea {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-family: inherit;
+    }
+    input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+    textarea { min-height: 260px; resize: vertical; font-size: 0.8rem; font-family: "Courier New", monospace; }
+
+    .hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.65rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; border: none;
+      transition: opacity 0.15s;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-danger  { background: var(--danger);  color: #fff; }
+    .btn-row { display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap; }
+
+    .status-box {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .status-box.ok    { background: #E6F9EE; color: #1F9B55; display: block; }
+    .status-box.error { background: #FFECEC; color: #C0392B; display: block; }
+    .status-box.info  { background: #EAF4FF; color: #2F6FAB; display: block; }
+
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 0.75rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    .delete-warn { color: var(--danger); font-size: 0.8rem; margin-top: 6px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="warn-banner">
+    <strong>⚠️ 교사 전용 초기 설정 페이지입니다</strong>
+    이 파일은 학생 명단과 관리자 비밀번호를 Firebase에 저장하기 위한 1회용 도구입니다.<br>
+    <strong>설정 완료 후 반드시 GitHub 저장소에서 이 파일(setup.html)을 삭제하세요.</strong>
+  </div>
+
+  <h1>🔧 초기 설정</h1>
+  <p class="sub">학생 명단과 관리자 비밀번호를 Firebase Realtime Database에 저장합니다.</p>
+
+  <!-- STEP 1: 관리자 비밀번호 -->
+  <div class="card">
+    <h2><span class="step-num">1</span> 관리자 비밀번호 설정</h2>
+    <label for="admin-pw">새 관리자 비밀번호</label>
+    <input type="password" id="admin-pw" placeholder="8자 이상 권장" />
+    <label for="admin-pw-confirm">비밀번호 확인</label>
+    <input type="password" id="admin-pw-confirm" placeholder="위와 동일하게 입력" />
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveAdminPassword()">💾 비밀번호 저장</button>
+    </div>
+    <div id="admin-status" class="status-box"></div>
+  </div>
+
+  <!-- STEP 2: 학생 명단 -->
+  <div class="card">
+    <h2><span class="step-num">2</span> 학생 명단 입력</h2>
+    <p style="font-size:0.85rem; color:var(--sub); margin-bottom:12px;">
+      아래 형식으로 한 줄에 한 명씩 입력하세요.<br>
+      <code style="background:#F0F2F7; padding:2px 6px; border-radius:4px;">번호,이름,초기코드</code>
+      — 초기코드는 생략하면 자동으로 <strong>1234</strong>가 됩니다.
+    </p>
+    <label for="students-input">학생 명단</label>
+    <textarea id="students-input" placeholder="1,김민준,1234
+2,이서연,1234
+3,박지호
+..."></textarea>
+    <div class="hint">이미 학생이 코드를 변경한 경우, 해당 학생 줄을 포함하면 코드가 초기화됩니다. 기존 학생을 제외하고 신규 학생만 추가하려면 해당 줄만 입력하세요.</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="previewStudents()">👁 미리보기</button>
+      <button class="btn btn-primary" onclick="saveStudents()">💾 Firebase에 저장</button>
+    </div>
+    <div id="students-status" class="status-box"></div>
+    <div id="students-preview" style="margin-top:1rem;"></div>
+  </div>
+
+  <!-- STEP 3: 확인 -->
+  <div class="card">
+    <h2><span class="step-num">3</span> 저장 현황 확인</h2>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkFirebase()">🔍 Firebase 데이터 확인</button>
+    </div>
+    <div id="check-status" class="status-box"></div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- 위험 영역 -->
+  <div class="card" style="border-color: var(--danger);">
+    <h2 style="color:var(--danger);">⚠️ 위험 구역 — 데이터 삭제</h2>
+    <p class="delete-warn">아래 버튼은 되돌릴 수 없습니다. 신중하게 사용하세요.</p>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn btn-danger" onclick="deleteStudents()">🗑 학생 명단 전체 삭제</button>
+      <button class="btn btn-danger" onclick="deleteSubmissions()">🗑 제출 데이터 전체 삭제</button>
+    </div>
+    <div id="delete-status" class="status-box"></div>
+  </div>
+
+</div>
+
+<script>
+const DB_URL = "https://app-16081-default-rtdb.firebaseio.com/";
+
+async function _fbGet(path) {
+  const res = await fetch(`${DB_URL}${path}.json`);
+  return res.ok ? await res.json() : null;
+}
+async function _fbSet(path, value) {
+  const res = await fetch(`${DB_URL}${path}.json`, {
+    method: "PUT", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(value),
+  });
+  return res.ok;
+}
+async function _fbPatch(path, value) {
+  const res = await fetch(`${DB_URL}${path}.json`, {
+    method: "PATCH", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(value),
+  });
+  return res.ok;
+}
+async function _fbDelete(path) {
+  const res = await fetch(`${DB_URL}${path}.json`, { method: "DELETE" });
+  return res.ok;
+}
+
+function showStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `status-box ${type}`;
+}
+
+// ── 관리자 비밀번호 저장 ──────────────────
+async function saveAdminPassword() {
+  const pw      = document.getElementById("admin-pw").value.trim();
+  const confirm = document.getElementById("admin-pw-confirm").value.trim();
+  if (!pw) { showStatus("admin-status", "비밀번호를 입력해주세요.", "error"); return; }
+  if (pw.length < 4) { showStatus("admin-status", "비밀번호는 4자 이상으로 설정하세요.", "error"); return; }
+  if (pw !== confirm) { showStatus("admin-status", "비밀번호가 일치하지 않아요.", "error"); return; }
+  showStatus("admin-status", "저장 중...", "info");
+  const ok = await _fbSet("/admin/password", pw);
+  if (ok) {
+    showStatus("admin-status", `✅ 관리자 비밀번호가 저장되었어요. (${pw.length}자)`, "ok");
+    document.getElementById("admin-pw").value = "";
+    document.getElementById("admin-pw-confirm").value = "";
+  } else {
+    showStatus("admin-status", "❌ 저장 실패. Firebase 연결을 확인하세요.", "error");
+  }
+}
+
+// ── 학생 명단 파싱 ────────────────────────
+function parseStudents(raw) {
+  const lines   = raw.trim().split("\n").filter(l => l.trim());
+  const students = {};
+  const errors   = [];
+
+  lines.forEach((line, i) => {
+    const parts = line.split(",").map(p => p.trim());
+    const num   = parseInt(parts[0]);
+    const name  = parts[1];
+    const code  = parts[2] || "1234";
+
+    if (isNaN(num) || num < 1) { errors.push(`줄 ${i+1}: 번호가 올바르지 않아요 ("${line}")`); return; }
+    if (!name) { errors.push(`줄 ${i+1}: 이름이 없어요`); return; }
+    students[String(num)] = { number: num, name, code };
+  });
+
+  return { students, errors };
+}
+
+function previewStudents() {
+  const raw = document.getElementById("students-input").value;
+  const { students, errors } = parseStudents(raw);
+
+  const preview = document.getElementById("students-preview");
+  if (errors.length) {
+    preview.innerHTML = `<div class="status-box error" style="display:block;">오류:<br>${errors.join("<br>")}</div>`;
+    return;
+  }
+
+  const list = Object.values(students);
+  let html = `<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:4px;">
+    <thead><tr style="background:#F8F9FC;">
+      <th style="padding:6px 8px;text-align:left;border:1px solid var(--border);">번호</th>
+      <th style="padding:6px 8px;text-align:left;border:1px solid var(--border);">이름</th>
+      <th style="padding:6px 8px;text-align:left;border:1px solid var(--border);">초기 코드</th>
+    </tr></thead><tbody>`;
+  list.forEach(s => {
+    html += `<tr>
+      <td style="padding:5px 8px;border:1px solid var(--border);">${s.number}</td>
+      <td style="padding:5px 8px;border:1px solid var(--border);">${s.name}</td>
+      <td style="padding:5px 8px;border:1px solid var(--border);font-family:monospace;">${s.code}</td>
+    </tr>`;
+  });
+  html += `</tbody></table><p style="font-size:0.8rem;color:var(--sub);margin-top:6px;">총 ${list.length}명</p>`;
+  preview.innerHTML = html;
+}
+
+async function saveStudents() {
+  const raw = document.getElementById("students-input").value;
+  const { students, errors } = parseStudents(raw);
+
+  if (errors.length) {
+    showStatus("students-status", "오류를 먼저 수정하세요:\n" + errors.join("\n"), "error");
+    return;
+  }
+  if (Object.keys(students).length === 0) {
+    showStatus("students-status", "학생이 1명 이상 있어야 해요.", "error");
+    return;
+  }
+
+  const count = Object.keys(students).length;
+  if (!confirm(`${count}명의 학생 데이터를 Firebase에 저장할까요?\n기존에 같은 번호가 있으면 덮어씁니다.`)) return;
+
+  showStatus("students-status", "저장 중...", "info");
+  const ok = await _fbPatch("/students", students);
+  if (ok) {
+    showStatus("students-status", `✅ ${count}명 저장 완료!`, "ok");
+  } else {
+    showStatus("students-status", "❌ 저장 실패. Firebase 연결을 확인하세요.", "error");
+  }
+}
+
+// ── Firebase 확인 ────────────────────────
+async function checkFirebase() {
+  showStatus("check-status", "확인 중...", "info");
+  const [students, adminPw, submissions] = await Promise.all([
+    _fbGet("/students"),
+    _fbGet("/admin/password"),
+    _fbGet("/submissions"),
+  ]);
+
+  const studentCount    = students    ? Object.keys(students).length    : 0;
+  const submissionCount = submissions ? Object.keys(submissions).length : 0;
+  const hasPw           = adminPw !== null;
+
+  showStatus("check-status",
+    `✅ Firebase 연결 정상\n` +
+    `• 학생 명단: ${studentCount}명\n` +
+    `• 관리자 비밀번호: ${hasPw ? "설정됨 ✓" : "❌ 미설정"}\n` +
+    `• 제출 데이터: ${submissionCount}건`,
+    studentCount > 0 && hasPw ? "ok" : "error"
+  );
+}
+
+// ── 삭제 ────────────────────────────────
+async function deleteStudents() {
+  if (!confirm("⚠️ 학생 명단 전체를 삭제할까요?\n학생들이 로그인할 수 없게 됩니다.")) return;
+  showStatus("delete-status", "삭제 중...", "info");
+  const ok = await _fbDelete("/students");
+  showStatus("delete-status", ok ? "✅ 학생 명단 삭제 완료" : "❌ 삭제 실패", ok ? "ok" : "error");
+}
+
+async function deleteSubmissions() {
+  if (!confirm("⚠️ 제출 데이터 전체를 삭제할까요?\n복구할 수 없습니다.")) return;
+  showStatus("delete-status", "삭제 중...", "info");
+  const ok = await _fbDelete("/submissions");
+  showStatus("delete-status", ok ? "✅ 제출 데이터 삭제 완료" : "❌ 삭제 실패", ok ? "ok" : "error");
+}
+</script>
+</body>
+</html>
