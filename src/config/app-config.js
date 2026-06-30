@@ -10,10 +10,10 @@ const APP_CONFIG = {
 
   // ── 학급 기본 정보 (공개해도 무방) ──────────
   class: {
-    name: "3학년 2반",
-    year: "2025",
-    school: "○○중학교",
-    teacherName: "홍길동",
+    name: "5학년 1반",
+    year: "2026",
+    school: "서울목동초등학교",
+    teacherName: "박주옥",
   },
 
   // ── 과제 목록 (공개해도 무방) ───────────────
