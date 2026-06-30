@@ -19,7 +19,7 @@ const StudentPage = (() => {
   function _renderLogin() {
     document.getElementById("app").innerHTML =
       Login.render(APP_CONFIG.class.name, APP_CONFIG.class.school) +
-      AppFooter.render();
+      AppFooter.render(true);
   }
 
   // ── 메인 페이지 렌더 ────────────────────────
@@ -64,7 +64,7 @@ const StudentPage = (() => {
       <div id="settings-modal-overlay" class="modal-overlay"></div>
       <div id="toast" class="toast"></div>
 
-      ${AppFooter.render()}
+      ${AppFooter.render(true)}
     `;
   }
 

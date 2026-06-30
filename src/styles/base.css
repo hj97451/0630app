@@ -256,6 +256,13 @@ img { max-width: 100%; display: block; }
 }
 .app-footer-links a:hover { color: var(--color-primary); }
 .app-footer-divider { margin: 0 6px; color: var(--color-text-muted); }
+.app-footer-admin-link {
+  color: var(--color-text-muted) !important;
+  text-decoration: none !important;
+  opacity: 0.6;
+  font-size: 0.95em;
+}
+.app-footer-admin-link:hover { opacity: 1; text-decoration: underline !important; }
 .app-footer-bottom {
   margin-top: var(--space-sm);
   font-size: var(--font-size-xs);

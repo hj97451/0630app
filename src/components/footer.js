@@ -13,7 +13,8 @@ const AppFooter = (() => {
   const year = new Date().getFullYear();
 
   // ── Footer HTML 반환 ────────────────────────
-  function render() {
+  // showAdminLink: true면 "교사용 페이지" 링크를 작게 표시 (학생 화면에서만 사용)
+  function render(showAdminLink) {
     return `
       <footer class="app-footer">
         <div class="app-footer-inner">
@@ -23,6 +24,9 @@ const AppFooter = (() => {
               <a href="#" onclick="AppFooter.showTerms(); return false;">이용약관</a>
               <span class="app-footer-divider">|</span>
               <a href="#" onclick="AppFooter.showPrivacy(); return false;">개인정보처리방침</a>
+              ${showAdminLink ? `
+              <span class="app-footer-divider">|</span>
+              <a href="admin.html" class="app-footer-admin-link">교사용 페이지</a>` : ""}
             </span>
           </div>
           <div class="app-footer-bottom">
