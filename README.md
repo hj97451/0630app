@@ -1,6 +1,6 @@
 # 📚 과제 제출 관리 앱
 
-**소속학교:** ○○중학교 | **제작자:** 홍길동
+**소속학교:** 서울목동초등학교 | **제작자:** 박주옥
 
 ---
 
@@ -58,18 +58,6 @@ homework-app/
 
 ---
 
-## 📋 산출물 조건 체크리스트
-
-- [x] 소속학교·이름 표기 (`app-config.js` → `class.school`, `class.teacherName`)
-- [x] 개인정보처리방침 (로그인 화면 하단 링크)
-- [x] 이용약관 (로그인 화면 하단 링크)
-- [x] GitHub 레포지토리 주소: https://github.com/hj97451/0630app
-- [x] Firebase 백엔드 (`storage.js` — Realtime Database)
-- [ ] 프론트엔드 웹주소 (Vercel 배포 후 `app-config.js` → `site.frontendUrl` 입력)
-- [x] 사용방법 안내 (로그인 화면 하단 박스)
-- [ ] 배포 완료 확인 (Vercel 배포 후 체크)
-
----
 
 ## 🔒 Firebase Realtime Database 보안 규칙
 
