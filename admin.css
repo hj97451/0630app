@@ -1,0 +1,379 @@
+/**
+ * 🎨 admin.css
+ * ─────────────────────────────────────────────
+ * 관리자(교사) 페이지 전용 스타일
+ * ─────────────────────────────────────────────
+ */
+
+/* ── 관리자 로그인 ─────────────────────────── */
+.admin-login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1E2840 0%, #2F4270 100%);
+  padding: var(--space-lg);
+}
+.admin-login-card {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl) var(--space-xl);
+  backdrop-filter: blur(10px);
+}
+.admin-login-card h1 {
+  color: #fff;
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  margin-bottom: var(--space-xs);
+}
+.admin-login-card p {
+  color: rgba(255,255,255,0.55);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-xl);
+}
+.admin-login-card .form-label {
+  color: rgba(255,255,255,0.7);
+}
+.admin-login-card .form-input {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.admin-login-card .form-input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+.admin-login-card .form-input:focus {
+  border-color: var(--color-primary);
+  background: rgba(255,255,255,0.12);
+}
+
+/* ── 관리자 대시보드 레이아웃 ───────────────── */
+.admin-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+}
+
+/* 관리자 헤더 */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+.admin-header h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+}
+.admin-header .sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-sub);
+  margin-top: 2px;
+}
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ── 통계 카드 ─────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+.stat-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+.stat-value {
+  font-size: var(--font-size-3xl);
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+.stat-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── 과제 탭 선택 ───────────────────────────── */
+.assignment-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+.assignment-tab {
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-sub);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.assignment-tab.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+  box-shadow: 0 3px 10px rgba(74,144,217,0.30);
+}
+.assignment-tab:hover:not(.active) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── 학생 목록 테이블 ───────────────────────── */
+.student-table-wrapper {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+.table-title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+.table-search {
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  width: 200px;
+  transition: border-color var(--transition);
+}
+.table-search:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* 진행률 바 */
+.progress-bar-wrapper {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #EEF1F7;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-sub);
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* 테이블 */
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.student-table thead th {
+  background: #F8F9FC;
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+.student-table tbody tr {
+  transition: background var(--transition);
+}
+.student-table tbody tr:hover {
+  background: #F8F9FC;
+}
+.student-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+.student-table td {
+  padding: 0.85rem 1rem;
+  font-size: var(--font-size-sm);
+  vertical-align: middle;
+}
+
+.td-number {
+  width: 60px;
+  font-weight: 700;
+  color: var(--color-text-sub);
+}
+.td-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* 제출 여부 표시 */
+.submit-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+.submit-status.done {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+.submit-status.pending {
+  background: #F0F2F7;
+  color: var(--color-text-muted);
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.submit-status.done   .status-dot { background: var(--color-success); }
+.submit-status.pending .status-dot { background: var(--color-text-muted); }
+
+.td-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+.td-action {
+  text-align: right;
+}
+.view-btn {
+  padding: 0.35rem 0.85rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-sub);
+  cursor: pointer;
+  transition: all var(--transition);
+  background: none;
+}
+.view-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+.view-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── 제출 내용 상세 모달 ──────────────────── */
+.submission-detail {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.submission-meta {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+.meta-item {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-sub);
+}
+.meta-item strong {
+  display: block;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  margin-top: 2px;
+}
+.submission-content-box {
+  background: #F8F9FC;
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.submission-img-preview {
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+}
+
+/* ── 반응형 ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .student-table thead {
+    display: none;
+  }
+  .student-table tbody tr {
+    display: block;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-border) !important;
+  }
+  .student-table td {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0;
+    border: none;
+  }
+  .student-table td::before {
+    content: attr(data-label);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    min-width: 70px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .td-action {
+    text-align: left;
+    justify-content: flex-start;
+  }
+}

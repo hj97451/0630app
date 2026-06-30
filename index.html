@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>과제 제출함</title>
+  <meta name="description" content="학생 과제 제출 페이지" />
+
+  <!-- 구글 폰트 (Noto Sans KR) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- 스타일 -->
+  <link rel="stylesheet" href="src/styles/base.css" />
+  <link rel="stylesheet" href="src/styles/student.css" />
+</head>
+<body>
+
+  <!-- 앱 마운트 포인트 -->
+  <div id="app"></div>
+
+  <!-- 스크립트 로드 순서 중요! -->
+  <!-- 1. 설정 -->
+  <script src="src/config/app-config.js"></script>
+  <!-- 2. 유틸리티 -->
+  <script src="src/utils/storage.js"></script>
+  <!-- 3. 컴포넌트 -->
+  <script src="src/components/login.js"></script>
+  <script src="src/components/submit.js"></script>
+  <script src="src/components/settings.js"></script>
+  <!-- 4. 페이지 -->
+  <script src="src/pages/student-page.js"></script>
+
+  <!-- 앱 시작 -->
+  <script>
+    // 학생 명단 초기화 (최초 1회)
+    Storage.initStudents(APP_CONFIG.students);
+
+    // 학생 페이지 시작
+    StudentPage.init();
+  </script>
+
+</body>
+</html>
