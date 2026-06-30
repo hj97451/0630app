@@ -1,48 +1,38 @@
 /**
- * 📱 student-page.js
- * ─────────────────────────────────────────────
- * 학생 메인 페이지 로직
- * 로그인 후 표시되는 과제 목록 및 제출 화면
- * ─────────────────────────────────────────────
+ * 📱 student-page.js — 학생 메인 페이지
  */
 
 const StudentPage = (() => {
 
   let _student = null;
 
-  // ─────────────────────────────────────────
-  // 초기화
-  // ─────────────────────────────────────────
-  function init() {
+  // ── 초기화 ──────────────────────────────────
+  async function init() {
     const session = Storage.getSession();
-    if (!session) {
-      _renderLogin();
-      return;
-    }
-
-    // 세션에서 학생 정보 복원
+    if (!session) { _renderLogin(); return; }
     _student = session;
-    _renderPage();
+    _showLoading(true);
+    await _renderPage();
+    _showLoading(false);
   }
 
-  // ─────────────────────────────────────────
-  // 렌더: 로그인 화면
-  // ─────────────────────────────────────────
   function _renderLogin() {
-    document.getElementById("app").innerHTML = Login.render(APP_CONFIG.class.name);
+    document.getElementById("app").innerHTML =
+      Login.render(APP_CONFIG.class.name, APP_CONFIG.class.school) +
+      AppFooter.render(true);
   }
 
-  // ─────────────────────────────────────────
-  // 렌더: 메인 과제 페이지
-  // ─────────────────────────────────────────
-  function _renderPage() {
+  // ── 메인 페이지 렌더 ────────────────────────
+  async function _renderPage() {
     const activeAssignments = APP_CONFIG.assignments.filter(a => a.active);
 
-    // 제출 여부 확인 후 정렬: 미제출 → 제출 완료 순
-    const withStatus = activeAssignments.map(a => ({
-      ...a,
-      submission: Storage.getSubmission(_student.number, a.id),
-    }));
+    const withStatus = await Promise.all(
+      activeAssignments.map(async a => ({
+        ...a,
+        submission: await Storage.getSubmission(_student.number, a.id),
+      }))
+    );
+
     withStatus.sort((a, b) => {
       if (a.submission && !b.submission) return 1;
       if (!a.submission && b.submission) return -1;
@@ -51,48 +41,36 @@ const StudentPage = (() => {
 
     const assignmentCards = withStatus.length > 0
       ? withStatus.map(_buildAssignmentCard).join("")
-      : `<div class="empty-state">
-           <div class="emoji">🎉</div>
-           <p>지금 제출할 과제가 없어요!</p>
-         </div>`;
+      : `<div class="empty-state"><div class="emoji">🎉</div><p>지금 제출할 과제가 없어요!</p></div>`;
 
     document.getElementById("app").innerHTML = `
       <div class="student-layout">
-
-        <!-- 상단 헤더 -->
         <header class="student-header">
           <div>
-            <div class="greeting">${APP_CONFIG.class.name}</div>
+            <div class="greeting">${APP_CONFIG.class.school} · ${APP_CONFIG.class.name}</div>
             <div class="student-name">${_student.number}번 ${_student.name} 👋</div>
           </div>
           <div class="header-actions">
+            <button class="header-btn" onclick="StudentPage.showHowTo()">📖 사용방법 안내</button>
             <button class="header-btn" onclick="StudentPage.openSettings()">⚙️ 설정</button>
             <button class="header-btn" onclick="StudentPage.logout()">로그아웃</button>
           </div>
         </header>
 
-        <!-- 과제 목록 -->
         <div class="section-title">📋 과제 목록</div>
-        <div class="assignment-list">
-          ${assignmentCards}
-        </div>
-
+        <div class="assignment-list">${assignmentCards}</div>
       </div>
 
-      <!-- 제출 모달 -->
-      <div id="submit-modal-overlay" class="modal-overlay"></div>
-
-      <!-- 설정 모달 -->
+      <div id="submit-modal-overlay"   class="modal-overlay"></div>
       <div id="settings-modal-overlay" class="modal-overlay"></div>
-
-      <!-- 토스트 알림 -->
+      <div id="howto-modal-overlay"     class="modal-overlay"></div>
       <div id="toast" class="toast"></div>
+
+      ${AppFooter.render(true)}
     `;
   }
 
-  // ─────────────────────────────────────────
-  // 과제 카드 HTML 생성
-  // ─────────────────────────────────────────
+  // ── 과제 카드 ──────────────────────────────
   function _buildAssignmentCard(a) {
     const submitted = !!a.submission;
     const daysLeft  = Storage.daysUntilDue(a.due);
@@ -102,49 +80,27 @@ const StudentPage = (() => {
     if (submitted) cardClass += " submitted";
     else if (isDueSoon) cardClass += " due-soon";
 
-    // 마감일 표시
     let dueText = `📅 마감 ${a.due}`;
-    if (submitted) {
-      dueText = `제출 완료 · ${Storage.formatDate(a.submission.submittedAt)}`;
-    } else if (daysLeft < 0) {
-      dueText = "⚠️ 마감이 지났어요";
-    } else if (isDueSoon) {
-      dueText = `⏰ 마감 ${daysLeft === 0 ? "오늘까지!" : `${daysLeft}일 남았어요`}`;
-    }
+    if (submitted)       dueText = `제출 완료 · ${Storage.formatDate(a.submission.submittedAt)}`;
+    else if (daysLeft < 0) dueText = "⚠️ 마감이 지났어요";
+    else if (isDueSoon)  dueText = `⏰ 마감 ${daysLeft === 0 ? "오늘까지!" : `${daysLeft}일 남았어요`}`;
 
-    // 허용 제출 형식 칩
     const TYPE_LABELS = { text: "✏️ 줄글", image: "📸 사진", pdf: "📄 PDF" };
-    const typeChips = a.types.map(t =>
-      `<span class="type-chip">${TYPE_LABELS[t] || t}</span>`
-    ).join("");
+    const typeChips   = a.types.map(t => `<span class="type-chip">${TYPE_LABELS[t] || t}</span>`).join("");
 
-    // 제출 상태 버튼/배지
     const actionHTML = submitted
-      ? `<div class="done-badge">
-           <div class="done-icon">✓</div>
-           제출 완료
-         </div>
-         <button
-           class="btn btn-outline"
-           style="font-size:0.8rem; padding:0.5rem 1rem;"
-           onclick="StudentPage.cancelSubmission('${a.id}')"
-         >
-           다시 제출
-         </button>`
-      : `<button
-           class="btn btn-primary"
-           onclick="StudentPage.openSubmit('${a.id}')"
-         >
-           과제 제출하기 →
-         </button>`;
+      ? `<div class="done-badge"><div class="done-icon">✓</div>제출 완료</div>
+         <button class="btn btn-outline" style="font-size:0.8rem;padding:0.5rem 1rem;"
+           onclick="StudentPage.cancelSubmission('${a.id}')">다시 제출</button>`
+      : `<button class="btn btn-primary" onclick="StudentPage.openSubmit('${a.id}')">과제 제출하기 →</button>`;
 
     return `
       <div class="${cardClass}" id="card-${a.id}">
         <div class="card-top">
           <h2 class="card-title">${a.title}</h2>
-          ${submitted ? '<span class="badge badge-success">✓ 제출 완료</span>' :
-            isDueSoon ? '<span class="badge badge-warning">마감 임박</span>' :
-            '<span class="badge badge-primary">제출 전</span>'}
+          ${submitted ? '<span class="badge badge-success">✓ 제출 완료</span>'
+          : isDueSoon ? '<span class="badge badge-warning">마감 임박</span>'
+          : '<span class="badge badge-primary">제출 전</span>'}
         </div>
         <p class="card-desc">${a.desc}</p>
         <div class="card-meta">
@@ -156,24 +112,56 @@ const StudentPage = (() => {
     `;
   }
 
-  // ─────────────────────────────────────────
-  // 액션 핸들러
-  // ─────────────────────────────────────────
-
+  // ── 액션 핸들러 ────────────────────────────
   function openSubmit(assignmentId) {
     const assignment = APP_CONFIG.assignments.find(a => a.id === assignmentId);
     if (!assignment) return;
     Submit.open(assignment, _student);
   }
 
-  function cancelSubmission(assignmentId) {
+  async function cancelSubmission(assignmentId) {
     if (!window.confirm("제출을 취소하고 다시 제출하시겠어요?")) return;
-    Storage.deleteSubmission(_student.number, assignmentId);
-    refresh();
+    await Storage.deleteSubmission(_student.number, assignmentId);
+    await refresh();
   }
 
-  function openSettings() {
-    Settings.open(_student);
+  function openSettings() { Settings.open(_student); }
+
+  // ── 사용방법 안내 ──────────────────────────
+  function showHowTo() {
+    const overlay = document.getElementById("howto-modal-overlay");
+    overlay.innerHTML = `
+      <div class="modal-box policy-modal-box">
+        <h2 class="modal-title">📖 사용방법 안내</h2>
+        <div class="policy-modal-body">
+          <h4>1. 로그인</h4>
+          <p>번호·이름·개인 코드를 입력해 로그인하세요. 처음 로그인은 선생님이 알려준 코드를 사용해요.</p>
+
+          <h4>2. 주요 기능</h4>
+          <ul class="policy-list">
+            <li>제출할 과제 카드를 눌러 줄글·사진·PDF 중 원하는 형태로 제출</li>
+            <li>제출 완료 후 ✅ 표시로 확인 가능, 필요하면 "다시 제출"로 재제출</li>
+            <li>⚙️ 설정에서 개인 코드를 언제든 변경 가능</li>
+          </ul>
+
+          <h4>3. 주의사항</h4>
+          <ul class="policy-list">
+            <li>개인 코드는 절대 다른 사람에게 알려주지 마세요</li>
+            <li>코드를 잊으면 선생님께 문의하세요</li>
+            <li>마감일이 지나면 ⚠️ 표시가 나타나니 미리 제출해주세요</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" style="width:100%;" onclick="StudentPage.closeHowTo()">확인</button>
+        </div>
+      </div>
+    `;
+    overlay.classList.add("open");
+    overlay.onclick = e => { if (e.target === overlay) closeHowTo(); };
+  }
+
+  function closeHowTo() {
+    document.getElementById("howto-modal-overlay").classList.remove("open");
   }
 
   function logout() {
@@ -182,12 +170,29 @@ const StudentPage = (() => {
     _renderLogin();
   }
 
-  // 과제 목록 새로 고침 (제출 후 호출)
-  function refresh() {
-    _renderPage();
+  async function refresh() {
+    _showLoading(true);
+    await _renderPage();
+    _showLoading(false);
   }
 
-  return { init, refresh, openSubmit, cancelSubmission, openSettings, logout };
+  // ── 로딩 ────────────────────────────────────
+  function _showLoading(show) {
+    let el = document.getElementById("global-loading");
+    if (show) {
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "global-loading";
+        el.className = "loading-overlay";
+        el.innerHTML = `<div class="spinner"></div><div class="loading-text">불러오는 중...</div>`;
+        document.body.appendChild(el);
+      }
+    } else {
+      if (el) el.remove();
+    }
+  }
+
+  return { init, refresh, openSubmit, cancelSubmission, openSettings, logout, showHowTo, closeHowTo };
 
 })();
 
