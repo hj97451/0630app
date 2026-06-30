@@ -23,7 +23,7 @@ const APP_CONFIG = {
       id: "hw_001",
       title: "독서 감상문 쓰기",
       desc: "이번 주에 읽은 책의 줄거리와 느낀 점을 써서 제출하세요.",
-      due: "2026-08-10",
+      due: "2027-08-10",
       types: ["text", "image", "pdf"],
       active: true,
     },
