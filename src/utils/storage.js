@@ -104,7 +104,9 @@ const Storage = (() => {
    */
   async function getAllStudents() {
     const students = await _fbGet("/students") || {};
-    return Object.values(students).sort((a, b) => a.number - b.number);
+    return Object.values(students)
+      .filter(s => s && typeof s.number === "number")
+      .sort((a, b) => a.number - b.number);
   }
 
   /**
@@ -145,7 +147,7 @@ const Storage = (() => {
 
   async function getSubmissionsByAssignment(assignmentId) {
     const all = await _fbGet("/submissions") || {};
-    return Object.values(all).filter(s => s.assignmentId === assignmentId);
+    return Object.values(all).filter(s => s && s.assignmentId === assignmentId);
   }
 
   async function deleteSubmission(studentNumber, assignmentId) {

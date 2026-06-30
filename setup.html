@@ -139,7 +139,9 @@
     <h2><span class="step-num">3</span> 저장 현황 확인</h2>
     <div class="btn-row">
       <button class="btn btn-primary" onclick="checkFirebase()">🔍 Firebase 데이터 확인</button>
+      <button class="btn btn-primary" onclick="cleanInvalidStudents()">🧹 빈 항목 정리</button>
     </div>
+    <div id="clean-status" class="status-box"></div>
     <div id="check-status" class="status-box"></div>
   </div>
 
@@ -281,7 +283,36 @@ async function saveStudents() {
   }
 }
 
-// ── Firebase 확인 ────────────────────────
+// ── 빈/잘못된 항목 정리 ────────────────────
+async function cleanInvalidStudents() {
+  showStatus("clean-status", "확인 중...", "info");
+  const students = await _fbGet("/students") || {};
+
+  const validKeys = [];
+  const invalidKeys = [];
+
+  Object.entries(students).forEach(([key, val]) => {
+    if (val && typeof val.number === "number" && val.name) {
+      validKeys.push(key);
+    } else {
+      invalidKeys.push(key);
+    }
+  });
+
+  if (invalidKeys.length === 0) {
+    showStatus("clean-status", "✅ 손상된 항목이 없어요. 정상이에요!", "ok");
+    return;
+  }
+
+  if (!confirm(`손상된 항목 ${invalidKeys.length}개를 발견했어요 (키: ${invalidKeys.join(", ")}).\n삭제할까요?`)) return;
+
+  showStatus("clean-status", "삭제 중...", "info");
+  for (const key of invalidKeys) {
+    await _fbDelete(`/students/${key}`);
+  }
+  showStatus("clean-status", `✅ 손상된 항목 ${invalidKeys.length}개 삭제 완료! (정상 항목 ${validKeys.length}개 유지)`, "ok");
+}
+
 async function checkFirebase() {
   showStatus("check-status", "확인 중...", "info");
   const [students, adminPw, submissions] = await Promise.all([

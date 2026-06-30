@@ -51,6 +51,7 @@ const StudentPage = (() => {
             <div class="student-name">${_student.number}번 ${_student.name} 👋</div>
           </div>
           <div class="header-actions">
+            <button class="header-btn" onclick="StudentPage.showHowTo()">📖 사용방법 안내</button>
             <button class="header-btn" onclick="StudentPage.openSettings()">⚙️ 설정</button>
             <button class="header-btn" onclick="StudentPage.logout()">로그아웃</button>
           </div>
@@ -62,6 +63,7 @@ const StudentPage = (() => {
 
       <div id="submit-modal-overlay"   class="modal-overlay"></div>
       <div id="settings-modal-overlay" class="modal-overlay"></div>
+      <div id="howto-modal-overlay"     class="modal-overlay"></div>
       <div id="toast" class="toast"></div>
 
       ${AppFooter.render(true)}
@@ -125,6 +127,43 @@ const StudentPage = (() => {
 
   function openSettings() { Settings.open(_student); }
 
+  // ── 사용방법 안내 ──────────────────────────
+  function showHowTo() {
+    const overlay = document.getElementById("howto-modal-overlay");
+    overlay.innerHTML = `
+      <div class="modal-box policy-modal-box">
+        <h2 class="modal-title">📖 사용방법 안내</h2>
+        <div class="policy-modal-body">
+          <h4>1. 로그인</h4>
+          <p>번호·이름·개인 코드를 입력해 로그인하세요. 처음 로그인은 선생님이 알려준 코드를 사용해요.</p>
+
+          <h4>2. 주요 기능</h4>
+          <ul class="policy-list">
+            <li>제출할 과제 카드를 눌러 줄글·사진·PDF 중 원하는 형태로 제출</li>
+            <li>제출 완료 후 ✅ 표시로 확인 가능, 필요하면 "다시 제출"로 재제출</li>
+            <li>⚙️ 설정에서 개인 코드를 언제든 변경 가능</li>
+          </ul>
+
+          <h4>3. 주의사항</h4>
+          <ul class="policy-list">
+            <li>개인 코드는 절대 다른 사람에게 알려주지 마세요</li>
+            <li>코드를 잊으면 선생님께 문의하세요</li>
+            <li>마감일이 지나면 ⚠️ 표시가 나타나니 미리 제출해주세요</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" style="width:100%;" onclick="StudentPage.closeHowTo()">확인</button>
+        </div>
+      </div>
+    `;
+    overlay.classList.add("open");
+    overlay.onclick = e => { if (e.target === overlay) closeHowTo(); };
+  }
+
+  function closeHowTo() {
+    document.getElementById("howto-modal-overlay").classList.remove("open");
+  }
+
   function logout() {
     Storage.clearSession();
     _student = null;
@@ -153,7 +192,7 @@ const StudentPage = (() => {
     }
   }
 
-  return { init, refresh, openSubmit, cancelSubmission, openSettings, logout };
+  return { init, refresh, openSubmit, cancelSubmission, openSettings, logout, showHowTo, closeHowTo };
 
 })();
 
