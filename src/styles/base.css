@@ -228,3 +228,125 @@ img { max-width: 100%; display: block; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ── 공통 Footer ──────────────────────────── */
+.app-footer {
+  margin-top: var(--space-2xl);
+  padding: var(--space-lg) var(--space-md);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.app-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.app-footer-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-sub);
+}
+.app-footer-copyright { font-weight: 600; }
+.app-footer-links a {
+  color: var(--color-text-sub);
+  text-decoration: underline;
+}
+.app-footer-links a:hover { color: var(--color-primary); }
+.app-footer-divider { margin: 0 6px; color: var(--color-text-muted); }
+.app-footer-bottom {
+  margin-top: var(--space-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ── 정책 전문 모달 ───────────────────────── */
+.policy-modal-box {
+  max-width: 560px;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+}
+.policy-modal-body {
+  overflow-y: auto;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-sub);
+  line-height: 1.7;
+  padding-right: 4px;
+}
+.policy-modal-body h4 {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: var(--space-md);
+  margin-bottom: 4px;
+}
+.policy-modal-body h4:first-child { margin-top: 0; }
+.policy-lead {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+.policy-list { margin: 4px 0 8px 1.2rem; }
+.policy-list li { margin-bottom: 2px; }
+.policy-warn {
+  background: var(--color-warning-light);
+  color: #7A5000;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  margin: 6px 0;
+}
+.policy-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: var(--font-size-xs); }
+.policy-table td { padding: 4px 8px; border: 1px solid var(--color-border); }
+.policy-table td:first-child { font-weight: 600; width: 80px; background: #F8F9FC; }
+.policy-footer-line {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ── 동의 체크박스 (회원가입/로그인) ──────── */
+.consent-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  background: #F8F9FC;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+.consent-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-sub);
+  cursor: pointer;
+}
+.consent-item input[type="checkbox"] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.consent-item .required-tag {
+  color: var(--color-danger);
+  font-weight: 700;
+  margin-right: 2px;
+}
+.consent-item a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 600;
+}

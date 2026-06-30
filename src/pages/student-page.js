@@ -18,14 +18,14 @@ const StudentPage = (() => {
 
   function _renderLogin() {
     document.getElementById("app").innerHTML =
-      Login.render(APP_CONFIG.class.name, APP_CONFIG.class.school);
+      Login.render(APP_CONFIG.class.name, APP_CONFIG.class.school) +
+      AppFooter.render();
   }
 
   // ── 메인 페이지 렌더 ────────────────────────
   async function _renderPage() {
     const activeAssignments = APP_CONFIG.assignments.filter(a => a.active);
 
-    // Firebase에서 제출 현황 가져오기
     const withStatus = await Promise.all(
       activeAssignments.map(async a => ({
         ...a,
@@ -33,7 +33,6 @@ const StudentPage = (() => {
       }))
     );
 
-    // 미제출 → 제출 완료 순 정렬
     withStatus.sort((a, b) => {
       if (a.submission && !b.submission) return 1;
       if (!a.submission && b.submission) return -1;
@@ -59,21 +58,13 @@ const StudentPage = (() => {
 
         <div class="section-title">📋 과제 목록</div>
         <div class="assignment-list">${assignmentCards}</div>
-
-        <div style="text-align:center; margin-top: var(--space-xl);">
-          <span style="font-size:var(--font-size-xs); color:var(--color-text-muted);">
-            ${APP_CONFIG.class.school} · ${APP_CONFIG.class.name} · v${APP_CONFIG.site.version} ·
-            <a href="#" onclick="StudentPage.showPrivacy(); return false;" style="color:var(--color-text-muted);">개인정보처리방침</a> ·
-            <a href="#" onclick="StudentPage.showTerms(); return false;" style="color:var(--color-text-muted);">이용약관</a> ·
-            <a href="${APP_CONFIG.site.githubUrl}" target="_blank" rel="noopener" style="color:var(--color-text-muted);">GitHub</a>
-          </span>
-        </div>
       </div>
 
       <div id="submit-modal-overlay"   class="modal-overlay"></div>
       <div id="settings-modal-overlay" class="modal-overlay"></div>
-      <div id="policy-modal-overlay"   class="modal-overlay"></div>
       <div id="toast" class="toast"></div>
+
+      ${AppFooter.render()}
     `;
   }
 
@@ -146,60 +137,6 @@ const StudentPage = (() => {
     _showLoading(false);
   }
 
-  // ── 개인정보처리방침 ────────────────────────
-  function showPrivacy() {
-    _showPolicyModal("🔒 개인정보처리방침", `
-      <p style="margin-bottom:1rem;"><strong>${APP_CONFIG.class.school} ${APP_CONFIG.class.name}</strong> 과제 제출 서비스는 다음과 같이 개인정보를 처리합니다.</p>
-      <h4 style="margin-bottom:.5rem;">1. 수집 항목</h4>
-      <p style="margin-bottom:1rem;">학번, 이름, 개인 코드(비밀번호), 과제 제출 내용(텍스트/이미지/PDF), 제출 시각</p>
-      <h4 style="margin-bottom:.5rem;">2. 이용 목적</h4>
-      <p style="margin-bottom:1rem;">학생 과제 제출 및 교사의 제출 현황 확인</p>
-      <h4 style="margin-bottom:.5rem;">3. 보관 기간</h4>
-      <p style="margin-bottom:1rem;">해당 학년도 종료 후 파기 (Firebase Realtime Database 저장)</p>
-      <h4 style="margin-bottom:.5rem;">4. 문의처</h4>
-      <p>담임교사: ${APP_CONFIG.class.teacherName} 선생님</p>
-    `);
-  }
-
-  // ── 이용약관 ────────────────────────────────
-  function showTerms() {
-    _showPolicyModal("📄 이용약관", `
-      <h4 style="margin-bottom:.5rem;">서비스 이용 조건</h4>
-      <p style="margin-bottom:1rem;">본 서비스는 ${APP_CONFIG.class.school} ${APP_CONFIG.class.name} 학생 과제 제출 전용입니다.</p>
-      <h4 style="margin-bottom:.5rem;">책임 범위</h4>
-      <p style="margin-bottom:1rem;">제출된 과제의 내용에 대한 책임은 제출한 학생 본인에게 있습니다.</p>
-      <h4 style="margin-bottom:.5rem;">금지 행위</h4>
-      <p style="margin-bottom:1rem;">타인의 학번·이름으로 로그인 시도, 허위 과제 제출, 악성 파일 업로드 행위를 금지합니다.</p>
-      <h4 style="margin-bottom:.5rem;">변경 안내</h4>
-      <p>이용약관 변경 시 담임교사를 통해 사전 안내됩니다.</p>
-    `);
-  }
-
-  function _showPolicyModal(title, bodyHTML) {
-    const overlay = document.getElementById("policy-modal-overlay")
-      || document.querySelector(".modal-overlay:last-of-type");
-    if (!overlay) { alert(title); return; }
-
-    overlay.innerHTML = `
-      <div class="modal-box" style="max-width:500px; max-height:80vh; overflow-y:auto;">
-        <h2 class="modal-title">${title}</h2>
-        <div style="font-size:var(--font-size-sm); color:var(--color-text-sub); line-height:1.8;">
-          ${bodyHTML}
-        </div>
-        <div class="modal-footer" style="margin-top:var(--space-lg);">
-          <button class="btn btn-primary" onclick="StudentPage.closePolicyModal()" style="width:100%;">확인</button>
-        </div>
-      </div>
-    `;
-    overlay.classList.add("open");
-    overlay.addEventListener("click", e => { if (e.target === overlay) StudentPage.closePolicyModal(); });
-  }
-
-  function closePolicyModal() {
-    const overlay = document.getElementById("policy-modal-overlay");
-    if (overlay) overlay.classList.remove("open");
-  }
-
   // ── 로딩 ────────────────────────────────────
   function _showLoading(show) {
     let el = document.getElementById("global-loading");
@@ -216,7 +153,7 @@ const StudentPage = (() => {
     }
   }
 
-  return { init, refresh, openSubmit, cancelSubmission, openSettings, logout, showPrivacy, showTerms, closePolicyModal };
+  return { init, refresh, openSubmit, cancelSubmission, openSettings, logout };
 
 })();
 

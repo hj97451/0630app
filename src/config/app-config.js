@@ -23,7 +23,7 @@ const APP_CONFIG = {
       id: "hw_001",
       title: "독서 감상문 쓰기",
       desc: "이번 주에 읽은 책의 줄거리와 느낀 점을 써서 제출하세요.",
-      due: "2025-07-10",
+      due: "2027-07-10",
       types: ["text", "image", "pdf"],
       active: true,
     },
@@ -31,7 +31,7 @@ const APP_CONFIG = {
       id: "hw_002",
       title: "수학 풀이 사진 제출",
       desc: "교재 32~34쪽 풀이를 사진 찍어 제출하세요.",
-      due: "2025-07-08",
+      due: "2027-07-08",
       types: ["image", "pdf"],
       active: true,
     },
@@ -49,6 +49,15 @@ const APP_CONFIG = {
     githubUrl: "https://github.com/hj97451/0630app",
     frontendUrl: "",   // Vercel 배포 후 입력
     version: "1.0.0",
+  },
+
+  // ── 개발자 / 개인정보책임자 정보 (Footer 표시용) ──
+  developer: {
+    serviceName: "과제제출함",        // Footer에 표시되는 서비스명
+    name:        "박주옥",            // 개발자(개인정보책임자) 실명
+    school:      "서울목동초등학교",          // 소속 학교
+    role:        "교사",
+    contact:     "02-2646-3447",       // 교무실 연락처 (개인 휴대전화 X)
   },
 
   // ──────────────────────────────────────────────────────────────

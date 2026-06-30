@@ -107,6 +107,23 @@ const Storage = (() => {
     return Object.values(students).sort((a, b) => a.number - b.number);
   }
 
+  /**
+   * 개인정보 수집 동의 여부 확인 (최초 로그인 시 1회만 필요)
+   */
+  async function hasConsented(studentNumber) {
+    const v = await _fbGet(`/consents/${studentNumber}`);
+    return !!v;
+  }
+
+  /**
+   * 개인정보 수집 동의 기록
+   */
+  async function recordConsent(studentNumber) {
+    return await _fbSet(`/consents/${studentNumber}`, {
+      consentedAt: new Date().toISOString(),
+    });
+  }
+
   // ─────────────────────────────────────────
   // 과제 제출 관리
   // ─────────────────────────────────────────
@@ -186,6 +203,8 @@ const Storage = (() => {
     authenticateStudent,
     updateStudentCode,
     getAllStudents,
+    hasConsented,
+    recordConsent,
     saveSubmission,
     getSubmission,
     getSubmissionsByAssignment,

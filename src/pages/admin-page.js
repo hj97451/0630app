@@ -27,6 +27,7 @@ const AdminPage = (() => {
           </button>
         </div>
       </div>
+      ${AppFooter.render()}
     `;
   }
 
@@ -109,8 +110,6 @@ const AdminPage = (() => {
             <div class="sub">${APP_CONFIG.class.year}년도 · 교사용 · 소속: ${APP_CONFIG.class.teacherName} 선생님</div>
           </div>
           <div class="admin-header-actions">
-            <a href="${APP_CONFIG.site.githubUrl}" target="_blank" rel="noopener"
-               class="btn btn-outline" style="font-size:var(--font-size-sm);">GitHub</a>
             <button class="btn btn-outline" onclick="AdminPage.exportCSV()">📥 CSV</button>
             <button class="btn btn-outline" onclick="AdminPage.logout()">로그아웃</button>
           </div>
@@ -149,6 +148,8 @@ const AdminPage = (() => {
       </div>
       <div id="submission-modal-overlay" class="modal-overlay"></div>
       <div id="toast" class="toast"></div>
+
+      ${AppFooter.render()}
     `;
   }
 
